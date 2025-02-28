@@ -3,7 +3,7 @@ package com.urlshortener.urlshortener.model;
 import lombok.Data;
 
 
-class ShortenedUrl {
+public class ShortenedUrl {
     private final String shortUrl;
     private final String longUrl;
     private Integer accessCount=0;
