@@ -7,6 +7,7 @@ import com.urlshortener.urlshortener.repository.UrlRepository;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -36,5 +37,21 @@ public class UrlShortenerService {
         }
         shortenedUrl.incrementAccessCount();
         return  shortenedUrl.getLongUrl();
+    }
+    public String shortenUrl(String longUrl, int ttlInSeconds) throws IllegalAccessException {
+        if(!isValidUrl(longUrl)) {
+            throw new IllegalAccessException("Invalid URL!");
+        }
+        String existingShortUrl = urlRepository.getShortUrlByLongUrl(longUrl);
+        if(existingShortUrl != null) {
+            return existingShortUrl; //Returning short code;
+        }
+
+        String shortCode= encodingStrategy.generateShort(counter.incrementAndGet());
+        Instant expiration = Instant.now().plusSeconds(ttlInSeconds);
+        ShortenedUrl shortenedUrl = new ShortenedUrl(shortCode, longUrl);
+
+        urlRepository.saveShortUrl(shortenedUrl, longUrl, shortCode);
+        return shortenedUrl.getShortUrl();
     }
 }
