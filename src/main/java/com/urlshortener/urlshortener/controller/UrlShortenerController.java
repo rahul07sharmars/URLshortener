@@ -33,14 +33,27 @@ public class UrlShortenerController {
 
     @GetMapping("/{shortCode}")
     public ResponseEntity<String> getUrl(@PathVariable String shortCode) {
+        String longUrl = null;
         try {
-            String longUrl = urlShortenerService.getLongUrl(shortCode);
+            longUrl = urlShortenerService.getLongUrl(shortCode);
             return ResponseEntity.ok(longUrl);
+        }
+        catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    @GetMapping("accessCount/{shortCode}")
+    public ResponseEntity<String> accessCount(@PathVariable String shortCode) {
+        try {
+            int accessCount = urlShortenerService.getAccessCount(shortCode);
+            return ResponseEntity.ok(Integer.toString(accessCount));
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
-
     }
 }

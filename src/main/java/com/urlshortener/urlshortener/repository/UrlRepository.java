@@ -29,4 +29,9 @@ public class UrlRepository {
     public ShortenedUrl getByShortUrl(String shortUrl) {
         return shortToLongUrl.get(shortUrl);
     }
+
+    public void removeUrl(ShortenedUrl shortenedUrl) {
+        shortToLongUrl.remove(shortenedUrl.getShortUrl());
+        longToShortUrl.remove(shortenedUrl.getLongUrl());
+    }
 }

@@ -26,14 +26,15 @@ public class UrlShortenerService {
         }
     }
 
-    public String getLongUrl(String shortUrl) {
+    public String getLongUrl(String shortUrl) throws IllegalAccessException{
         ShortenedUrl shortenedUrl = urlRepository.getByShortUrl(shortUrl);
         if (shortenedUrl == null) {
-            try {
-                throw new IllegalAccessException("Short URL not found");
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            throw new IllegalAccessException("Url not found");
+
+        }
+        else if(shortenedUrl.getExpirationTime()!=null && shortenedUrl.getExpirationTime().isBefore(Instant.now())){
+            urlRepository.removeUrl(shortenedUrl);
+            throw new IllegalAccessException("Short URL expired");
         }
         shortenedUrl.incrementAccessCount();
         return  shortenedUrl.getLongUrl();
@@ -48,10 +49,18 @@ public class UrlShortenerService {
         }
 
         String shortCode= encodingStrategy.generateShort(counter.incrementAndGet());
-        Instant expiration = Instant.now().plusSeconds(ttlInSeconds);
-        ShortenedUrl shortenedUrl = new ShortenedUrl(shortCode, longUrl);
+        Instant expirationTime = ttlInSeconds>0 ? Instant.now().plusSeconds(ttlInSeconds):null;
+        ShortenedUrl shortenedUrl = new ShortenedUrl(shortCode, longUrl,expirationTime);
 
         urlRepository.saveShortUrl(shortenedUrl, longUrl, shortCode);
         return shortenedUrl.getShortUrl();
+    }
+
+    public int getAccessCount(String shortUrl) {
+        ShortenedUrl shortenedUrl = urlRepository.getByShortUrl(shortUrl);
+        if(shortenedUrl == null) {
+            return 0;
+        }
+        return shortenedUrl.getAccessCount();
     }
 }
