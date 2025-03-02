@@ -1,6 +1,7 @@
 package com.urlshortener.urlshortener.controller;
 
 import com.urlshortener.urlshortener.service.UrlShortenerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,15 +12,14 @@ import java.net.URI;
 @RequestMapping("/api")
 public class UrlShortenerController {
 
-    private final UrlShortenerService urlShortenerService;
+    @Autowired
+    private UrlShortenerService urlShortenerService;
 
-    public UrlShortenerController(UrlShortenerService urlShortenerService) {
-        this.urlShortenerService = urlShortenerService;
-    }
     @GetMapping("/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("This is a test");
     }
+
     @PostMapping("/shorten")
     public ResponseEntity<String> shortenUrl(@RequestParam String longUrl,
                                              @RequestParam(defaultValue = "0") int ttl) {
@@ -41,8 +41,6 @@ public class UrlShortenerController {
         catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     @GetMapping("accessCount/{shortCode}")

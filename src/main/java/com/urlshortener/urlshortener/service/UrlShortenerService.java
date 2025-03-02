@@ -40,12 +40,13 @@ public class UrlShortenerService {
         return  shortenedUrl.getLongUrl();
     }
     public String shortenUrl(String longUrl, int ttlInSeconds) throws IllegalAccessException {
+        //valid url check
         if(!isValidUrl(longUrl)) {
             throw new IllegalAccessException("Invalid URL!");
         }
         String existingShortUrl = urlRepository.getShortUrlByLongUrl(longUrl);
         if(existingShortUrl != null) {
-            return existingShortUrl; //Returning short code;
+            return existingShortUrl; //Returning short code, without updating expiry time;
         }
 
         String shortCode= encodingStrategy.generateShort(counter.incrementAndGet());
@@ -56,6 +57,7 @@ public class UrlShortenerService {
         return shortenedUrl.getShortUrl();
     }
 
+    //increase the access count
     public int getAccessCount(String shortUrl) {
         ShortenedUrl shortenedUrl = urlRepository.getByShortUrl(shortUrl);
         if(shortenedUrl == null) {

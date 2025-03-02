@@ -11,6 +11,7 @@ public class ShortenedUrl {
     private Integer accessCount=0;
     private final Instant expirationTime;
 
+    //Constructor
     public ShortenedUrl(String shortUrl, String longUrl, Instant expirationTime) {
         this.shortUrl = shortUrl;
         this.longUrl = longUrl;

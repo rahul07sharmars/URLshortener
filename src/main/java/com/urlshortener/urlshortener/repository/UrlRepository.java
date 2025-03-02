@@ -11,6 +11,7 @@ public class UrlRepository {
 
     private UrlRepository() {}
 
+    //singleton pattern
     public static synchronized UrlRepository getInstance() {
         if (instance == null) {
             instance = new UrlRepository();
