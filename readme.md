@@ -10,6 +10,8 @@ URL using a short link. The project follows a modular and scalable design using 
 - Ensures each long URL maps to a unique short URL.
 - Uses **Factory Pattern** and **Singleton Pattern** for short URL generation.
 - In-memory storage for simplicity.
+- **Track and display** the number of times a shortened URL has been accessed
+- **Url Expire** after expirationTime (in seconds) given while generating short Url
 
 ## Technologies Used
 - Java 17
